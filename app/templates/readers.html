@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Readers</title>
+</head>
+<body>
+    <h1>Readers</h1>
+
+    <form action="{{ url_for('add_reader') }}" method="post">
+        <input type="text" name="name" placeholder="New reader name" required>
+        <input type="text" name="password" placeholder="New reader password" required>
+        <button type="submit">Add Reader</button>
+    </form>
+
+    <ul>
+        {% for reader in readers %}
+            <li>{{ reader.name }}</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ url_for('index') }}">Back to Home</a>
+</body>
+</html>

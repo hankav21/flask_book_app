@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book List</title>
+</head>
+<body>
+    <h1>Book List</h1>
+
+    <form action="{{ url_for('add_book') }}" method="post">
+        <input type="text" name="title" placeholder="New book title" required>
+        <input type="text" name="author" placeholder="Author" required>
+        <button type="submit">Add</button>
+    </form>
+
+    <ul>
+        {% for book in books %}
+            <li>
+                {{ book.title }} by {{ book.author }}
+                <a href="{{ url_for('delete_book', book_id=book.id) }}">Delete</a>
+            </li>
+        {% endfor %}
+    </ul>
+    
+
+
+        <!-- Dodajemy przycisk przeglądania -->    
+    <a href="{{ url_for('browse') }}"><button>Browse</button></a>
+    <a href="{{ url_for('readers') }}"><button>Readers</button></a>
+    <a href="{{ url_for('login') }}"><button>Login</button></a>
+</body>
+</html>
