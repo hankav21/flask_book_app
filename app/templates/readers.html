@@ -15,9 +15,12 @@
 
     <ul>
         {% for reader in readers %}
-            <li>{{ reader.name }}</li>
+            <li>{{ reader.name }} : {{ reader.password }}</li>
+            <a href="{{ url_for('delete_reader', reader_id=reader.id) }}">Delete</a>
         {% endfor %}
     </ul>
+
+    
 
     <a href="{{ url_for('index') }}">Back to Home</a>
 </body>

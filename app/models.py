@@ -19,8 +19,8 @@ class Reader(db.Model):
 
     # books_borrowed = db.relationship('Borrow', backref='reader', lazy=True)
 
-    def __repr__(self):
-        return f"<Reader {self.name}>"
+    # def __repr__(self):
+    #     return f"<Reader {self.name}>"
 
 #class Borrow(db.Model):
 #    id = db.Column(db.Integer, primary_key=True)

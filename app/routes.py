@@ -5,7 +5,7 @@ import datetime
 from flask import render_template, request, redirect, url_for, jsonify, flash
 from app import app, db
 from app.models import Book, Reader#, Borrow
-from app.forms import LoginForm
+
 
 
 
@@ -79,16 +79,17 @@ def browse():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = Reader.query.filter_by(name=form.name.data).first()
-        if user and user.password == form.password.data:
+    if request.method == 'POST':
+        name = request.form.get('name')
+        password = request.form.get('password')
+        user = Reader.query.filter_by(name=name).first()
+        if user and user.password == password:
             flash('Login successful!', 'success')
-            return redirect(url_for('home'))
+            return redirect(url_for('index'))
         else:
-            flash('Login unsuccessful. Please check username and password', 'danger')
-    return render_template('login.html', title='Login', form=form)
-#funkcjonalności bibliotekarza
+            flash('Login unsuccessful. Please check username and password Prawidłowe hasło: ' + user.password, 'danger')
+    return render_template('login.html')#funkcjonalności bibliotekarza
+
 @app.route('/add_reader', methods=['POST'])
 def add_reader():
     name = request.form.get('name')
@@ -104,3 +105,11 @@ def add_reader():
 def readers():
     readers = Reader.query.all()
     return render_template('readers.html', readers=readers)
+
+#usówanie czytelnika
+@app.route('/delete_reader/<int:reader_id>')
+def delete_reader(reader_id):
+    reader = Reader.query.get(reader_id)
+    db.session.delete(reader)
+    db.session.commit()
+    return redirect(url_for('readers'))    

@@ -1,25 +1,29 @@
-<!DOCTYPE html>
+<!-- app/templates/login.html -->
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
     <title>Login</title>
 </head>
 <body>
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        <div>
-            {{ form.name.label }} {{ form.name }}
-        </div>
-        <div>
-            {{ form.password.label }} {{ form.password }}
-        </div>
-        <div>
-            {{ form.submit }}
-        </div>
+    <h1>Login</h1>
+    <form method="POST" action="{{ url_for('login') }}">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required>
+        <br>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+        <br>
+        <button type="submit">Login</button>
     </form>
-    {% for message in get_flashed_messages(with_categories=true) %}
-        <div class="alert alert-{{ message[0] }}">{{ message[1] }}</div>
-    {% endfor %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
 </body>
 </html>
