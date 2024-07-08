@@ -4,7 +4,7 @@
 import datetime
 from flask import render_template, request, redirect, url_for, jsonify, flash, session
 from app import app, db
-from app.models import Book, Reader#, Borrow
+from app.models import Book, Reader, Borrow
 
 
 
@@ -41,7 +41,8 @@ def index():
     db.create_all ()
     books = Book.query.all() #if Book.query.all() > 0 else db.create_all()
     readers = Reader.query.all() #if Reader.query.count() > 0 else [] # Dodane, aby można było wybrać czytelnika przy wypożyczaniu książki
-    return render_template('index.html', books=books, readers=readers)
+    borrows = Borrow.query.all()
+    return render_template('index.html', books=books, readers=readers, borrows=borrows)
 
 @app.route('/add', methods=['POST'])
 def add_book():
@@ -66,18 +67,29 @@ def delete_book(book_id):
 #przegladanie przez uztkownika
 @app.route('/browse')
 def browse():
-    books = Book.query.all()  # Pobierz wszystkie książki z bazy danych
+    search_query = request.args.get('search')
+    if search_query:
+        books = Book.query.filter(Book.title.ilike(f'%{search_query}%')).all()
+    else:
+        books = Book.query.all()  # Pobierz wszystkie książki z bazy danych
+     
     return render_template('browse.html', books=books)  # Przekaż książki do szablonu
 
-# @app.route('/borrow', methods=['POST'])
+# @app.route('/borrow_book/<int:reader_id>', methods=['POST','GET'])
 # def borrow_book():
 #     book_id = request.form.get('book_id')
-#     reader_id = request.form.get('reader_id')
-#     borrow_date = datetime.now()
-#     #new_borrow = Borrow(book_id=book_id, reader_id=reader_id, borrow_date=borrow_date)
-#     #db.session.add(new_borrow)
-#     db.session.commit()
+#     reader_id = session['user_id']
+#     # borrow_date = datetime.now()
+#     # new_borrow = Borrow(book_id=book_id, reader_id=reader_id, borrow_date=borrow_date)
+#     # db.session.add(new_borrow)
+#     # db.session.commit()
 #     return redirect(url_for('index'))
+
+# #historia wypozyczeń czytelnika
+# @app.route('/borrow_history_user')
+# def borrow_history_user():
+    
+#     return('borrow_history_user')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

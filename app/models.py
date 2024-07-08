@@ -22,11 +22,11 @@ class Reader(db.Model):
     # def __repr__(self):
     #     return f"<Reader {self.name}>"
 
-#class Borrow(db.Model):
-#    id = db.Column(db.Integer, primary_key=True)
-#    book_id = db.Column(db.Integer, db.ForeignKey('book.id'), nullable=False)
-#    reader_id = db.Column(db.Integer, db.ForeignKey('reader.id'), nullable=False)
-#    borrow_date = db.Column(db.DateTime, nullable=False)
+class Borrow(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    book_id = db.Column(db.Integer, db.ForeignKey('book.id'), nullable=False)
+    reader_id = db.Column(db.Integer, db.ForeignKey('reader.id'), nullable=False)
+    borrow_date = db.Column(db.DateTime, nullable=False)
 
-    #book = db.relationship('Book', backref=db.backref('borrows', lazy=True))
-    #reader = db.relationship('Reader', backref=db.backref('borrows', lazy=True))
+    book = db.relationship('Book', backref=db.backref('borrows', lazy=True))
+    reader = db.relationship('Reader', backref=db.backref('borrows', lazy=True))

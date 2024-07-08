@@ -29,5 +29,11 @@
     <a href="{{ url_for('browse') }}"><button>Browse</button></a>
     <a href="{{ url_for('readers') }}"><button>Readers</button></a>
     <a href="{{ url_for('login') }}"><button>Login</button></a>
+    
+
+    {% if 'user_name' in session %}
+        
+        
+    {% endif %}
 </body>
 </html>
