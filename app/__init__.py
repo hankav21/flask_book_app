@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, g
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 import os
@@ -14,6 +14,10 @@ db.init_app(app)
 
 
 
+
+# @app.before_request
+# def before_request():
+    
 
 from app import routes, models  # Importuj routes i models na końcu, aby uniknąć cyklicznych importów
 

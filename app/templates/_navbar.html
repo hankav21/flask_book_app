@@ -1,0 +1,6 @@
+{% if 'user_name' in session %}
+        <p>Hello, {{ session['user_name'] }}!</p>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    {% else %}
+        <a href="{{ url_for('login') }}">Login</a>
+    {% endif %}

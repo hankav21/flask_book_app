@@ -2,7 +2,7 @@
 #from flask_sqlalchemy import SQLAlchemy
 
 import datetime
-from flask import render_template, request, redirect, url_for, jsonify, flash
+from flask import render_template, request, redirect, url_for, jsonify, flash, session
 from app import app, db
 from app.models import Book, Reader#, Borrow
 
@@ -33,9 +33,11 @@ from app.models import Book, Reader#, Borrow
 #     return jsonify(output)
 
 #app = create_app()
+global logged_in_user
 
 @app.route('/')
 def index(): 
+    
     db.create_all ()
     books = Book.query.all() #if Book.query.all() > 0 else db.create_all()
     readers = Reader.query.all() #if Reader.query.count() > 0 else [] # Dodane, aby można było wybrać czytelnika przy wypożyczaniu książki
@@ -79,16 +81,28 @@ def browse():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    
     if request.method == 'POST':
         name = request.form.get('name')
         password = request.form.get('password')
         user = Reader.query.filter_by(name=name).first()
         if user and user.password == password:
-            flash('Login successful!', 'success')
+            
+            session['user_name'] = user.name
+            session['user_id'] = user.id
+            
+            flash('Login successful! Hello ' + user.name, 'success')
             return redirect(url_for('index'))
         else:
             flash('Login unsuccessful. Please check username and password Prawidłowe hasło: ' + user.password, 'danger')
     return render_template('login.html')#funkcjonalności bibliotekarza
+
+@app.route('/logout')
+def logout():
+    session.pop('user_name', None)
+    session.pop('user_id', None)
+    flash('You have been logged out.', 'success')
+    return redirect(url_for('index'))
 
 @app.route('/add_reader', methods=['POST'])
 def add_reader():
@@ -98,12 +112,14 @@ def add_reader():
     db.session.add(new_reader)
     db.session.commit()
     #return redirect(url_for('readers'))
+    
     return redirect(url_for('index'))
 
 #wyświetlanie listy czytelników
 @app.route('/readers')
 def readers():
     readers = Reader.query.all()
+    
     return render_template('readers.html', readers=readers)
 
 #usówanie czytelnika
