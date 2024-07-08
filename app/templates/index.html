@@ -32,7 +32,7 @@
     
 
     {% if 'user_name' in session %}
-        
+    <a href="{{ url_for('borrow_now') }}"><button>Borrowed now</button></a>
     {% endif %}
 </body>
 </html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Browse</title>
+</head>
+<body>
+    {% include '_navbar.html' %}
+
+
+    <h1>Borrowed Page</h1>
+    <p>This is the borowed page.</p>
+    <a href="{{ url_for('index') }}">Back to Home</a>
+</body>
+
+
+<ul>
+    {% for b in borrowed %}
+        <li>
+            {{ b.book_id }} by {{ b.reader_id }} 
+            from {{b.borrow_date}} to {{b.return_date}}
+        </li>
+    {% endfor %}
+</ul>
+
+</html>

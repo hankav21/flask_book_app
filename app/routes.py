@@ -106,6 +106,11 @@ def borrow_book(book_id):
     readers = Reader.query.all()
     return render_template('borrow.html', book=book, readers=readers)
 
+@app.route('/borrowed')
+def borrow_now():
+    borrowed = Borrow.query.all()
+    return render_template('borrow_now.html', borrowed=borrowed)
+
 # #historia wypozyczeń czytelnika
 # @app.route('/borrow_history_user')
 # def borrow_history_user():
