@@ -25,6 +25,13 @@
     {% for book in books %}
         <li>
             {{ book.title }} by {{ book.author }}
+            {% if not book.is_borrowed %}
+                    <form action="{{ url_for('borrow_book', book_id=book.id) }}" method="post" style="display:inline;">
+                        <button type="submit">Borrow</button>
+                    </form>
+                {% else %}
+                    <span>(Currently Borrowed)</span>
+            {% endif %}
         </li>
     {% endfor %}
 </ul>

@@ -1,0 +1,11 @@
+<h1>Borrow {{ book.title }}</h1>
+<form method="POST">
+    <label for="reader_id">Select Reader:</label>
+    <select name="reader_id" id="reader_id">
+        {% for reader in readers %}
+            <option value="{{ reader.id }}">{{ reader.name }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Borrow</button>
+</form>
+<a href="{{ url_for('index') }}">Back</a>

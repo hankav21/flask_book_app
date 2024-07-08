@@ -33,12 +33,13 @@ from app.models import Book, Reader, Borrow
 #     return jsonify(output)
 
 #app = create_app()
-global logged_in_user
+
 
 @app.route('/')
 def index(): 
     
     db.create_all ()
+    
     books = Book.query.all() #if Book.query.all() > 0 else db.create_all()
     readers = Reader.query.all() #if Reader.query.count() > 0 else [] # Dodane, aby można było wybrać czytelnika przy wypożyczaniu książki
     borrows = Borrow.query.all()
@@ -70,20 +71,40 @@ def browse():
     search_query = request.args.get('search')
     if search_query:
         books = Book.query.filter(Book.title.ilike(f'%{search_query}%')).all()
+        
     else:
         books = Book.query.all()  # Pobierz wszystkie książki z bazy danych
      
     return render_template('browse.html', books=books)  # Przekaż książki do szablonu
 
-# @app.route('/borrow_book/<int:reader_id>', methods=['POST','GET'])
-# def borrow_book():
-#     book_id = request.form.get('book_id')
-#     reader_id = session['user_id']
-#     # borrow_date = datetime.now()
-#     # new_borrow = Borrow(book_id=book_id, reader_id=reader_id, borrow_date=borrow_date)
-#     # db.session.add(new_borrow)
-#     # db.session.commit()
-#     return redirect(url_for('index'))
+# @app.route('/borrow/<int:book_id>', methods=['GET','POST'])
+# def borrow_book(book_id):
+#     if 'logged_in_user' in session:
+#         reader_id = session['logged_in_user']
+#         borrow_date = datetime.datetime.now()
+#         new_borrow = Borrow(book_id=book_id, reader_id=reader_id, borrow_date=borrow_date)
+#         db.session.add(new_borrow)
+#         db.session.commit()
+#     return redirect(url_for('browse'))
+
+@app.route('/browse/<int:book_id>', methods=['GET', 'POST'])
+def borrow_book(book_id):   
+    
+    book = Book.query.get_or_404(book_id)
+    if request.method == 'POST':
+        reader_id = session.get('user_id')  # Pobranie ID aktualnie zalogowanego użytkownika z sesji
+        if not reader_id:
+            return jsonify({'error': 'User not logged in'}), 401
+        reader = Reader.query.get(reader_id)
+        if reader and not book.is_borrowed:
+            borrow = Borrow(book_id=book.id, reader_id=reader_id, borrow_date=datetime.date.today())
+            db.session.add(borrow)
+            db.session.commit()
+            return redirect(url_for('index'))
+        else:
+            flash('Book is already borrowed or invalid reader.')
+    readers = Reader.query.all()
+    return render_template('borrow.html', book=book, readers=readers)
 
 # #historia wypozyczeń czytelnika
 # @app.route('/borrow_history_user')
